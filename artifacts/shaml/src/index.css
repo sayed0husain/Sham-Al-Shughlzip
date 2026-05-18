@@ -3,6 +3,22 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: 'Zaatar';
+  src: url('/fonts/Boharat-Zataar_Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Zaatar';
+  src: url('/fonts/Boharat-Zataar_Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
@@ -64,7 +80,7 @@
   --destructive-foreground: 0 0% 100%;
 
   --app-font-sans: 'Tajawal', 'Arial', sans-serif;
-  --app-font-heading: 'Reem Kufi', 'Arial', sans-serif;
+  --app-font-heading: 'Zaatar', 'Reem Kufi', 'Arial', sans-serif;
   --radius: 0.75rem;
 }
 

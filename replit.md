@@ -1,45 +1,55 @@
-# [Project name]
+# شمل - Portfolio Website
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A modern, responsive, minimalist Arabic RTL portfolio website for "شمل".
 
 ## Run & Operate
 
+- `pnpm --filter @workspace/shaml run dev` — run the portfolio frontend (port auto-assigned)
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Frontend: React + Vite + Tailwind CSS
+- Fonts: Reem Kufi (headings), Tajawal (body) — Google Fonts Arabic
+- RTL: Full Arabic Right-to-Left support via `dir="rtl"` on html element
+- Primary accent color: hsl(8, 61%, 41%) — brownish-red derived from logo
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- Portfolio frontend: `artifacts/shaml/`
+- Logo asset: `artifacts/shaml/public/logo.png`
+- Theme/CSS: `artifacts/shaml/src/index.css`
+- Main component: `artifacts/shaml/src/App.tsx`
+- Original logo source: `attached_assets/image_1779143394052.png`
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Presentation-first app — no backend needed, all static
+- RTL direction set at the `<html dir="rtl">` level for full browser support
+- Logo image served from `public/` directory for direct URL access
+- Reem Kufi chosen as the closest available Google Fonts alternative to "Zaatar"
+- Accent color (#A63528 / hsl 8 61% 41%) extracted from the logo brownish-red
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+A company portfolio landing page for "شمل" featuring:
+- RTL navigation with logo, hamburger menu, and Arabic nav links
+- Large hero section with company name in accent color
+- Company vision text
+- Bottom split section with company info and 4 stat cards
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Full Arabic RTL support required
+- Brand: "شمل", accent color from logo (brownish-red)
+- Fonts: Zaatar-style (using Reem Kufi) for headings, Tajawal for body
+- Minimalist, modern, responsive design
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- Logo is in `public/logo.png` — referenced as `/logo.png` in the app
+- Always keep `dir="rtl"` on the root element
+- Reem Kufi from Google Fonts is the heading font (Zaatar substitute)

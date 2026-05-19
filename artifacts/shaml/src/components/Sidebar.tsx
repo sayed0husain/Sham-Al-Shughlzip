@@ -8,17 +8,12 @@ const ACCENT = "hsl(8, 61%, 41%)";
 const FONT_BRAND = "'Zaatar','Reem Kufi',sans-serif";
 const FONT_NAV = "'Tajawal','Arial',sans-serif";
 
-interface Props {
-  open: boolean;
-  onClose: () => void;
-}
+interface Props { open: boolean; onClose: () => void; }
 
 export default function Sidebar({ open, onClose }: Props) {
   const { user, isAdmin } = useAuth();
 
-  useEffect(() => {
-    getRedirectResult(auth).catch(() => {});
-  }, []);
+  useEffect(() => { getRedirectResult(auth).catch(() => {}); }, []);
 
   async function handleGoogleLogin() {
     try {
@@ -26,122 +21,56 @@ export default function Sidebar({ open, onClose }: Props) {
       onClose();
     } catch (err: unknown) {
       const code = (err as { code?: string }).code;
-      if (
-        code === "auth/popup-blocked" ||
-        code === "auth/popup-closed-by-user" ||
-        code === "auth/cancelled-popup-request"
-      ) {
-        try {
-          await signInWithRedirect(auth, googleProvider);
-        } catch (e2) {
-          console.error("redirect also failed", e2);
-        }
-      } else {
-        console.error("Google login error:", err);
+      if (code === "auth/popup-blocked" || code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
+        try { await signInWithRedirect(auth, googleProvider); } catch { /* silent */ }
       }
     }
   }
 
-  async function handleLogout() {
-    await signOut(auth);
-    onClose();
-  }
+  async function handleLogout() { await signOut(auth); onClose(); }
 
-  const navLinkStyle = {
-    fontFamily: FONT_NAV,
-    color: "hsl(20,10%,20%)",
-    fontSize: "1rem",
-    fontWeight: 500,
-  };
+  const navStyle = { fontFamily: FONT_NAV, color: "hsl(20,10%,20%)", fontSize: "1rem", fontWeight: 500 };
+
+  const navLinks = [
+    { href: "/", label: "🏠 الرئيسية" },
+    { href: "/games", label: "🎮 الألعاب" },
+    { href: "/websites", label: "🌐 المواقع" },
+    { href: "/team", label: "🤝 الأيادي العاملة" },
+    { href: "/contact", label: "💬 التواصل معنا" },
+  ];
 
   return (
     <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 transition-opacity duration-300"
-        style={{
-          backgroundColor: "rgba(0,0,0,0.35)",
-          opacity: open ? 1 : 0,
-          pointerEvents: open ? "auto" : "none",
-        }}
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 z-40 transition-opacity duration-300"
+        style={{ backgroundColor: "rgba(0,0,0,0.35)", opacity: open ? 1 : 0, pointerEvents: open ? "auto" : "none" }}
+        onClick={onClose} />
 
-      {/* Drawer */}
-      <aside
-        className="fixed top-0 right-0 z-50 h-full flex flex-col transition-transform duration-300"
-        style={{
-          width: 280,
-          backgroundColor: "hsl(0,0%,100%)",
-          boxShadow: "-4px 0 24px rgba(0,0,0,0.12)",
-          transform: open ? "translateX(0)" : "translateX(100%)",
-        }}
-        dir="rtl"
-      >
-        {/* Header — only "شمل" uses Zaatar */}
-        <div
-          className="flex items-center justify-between px-5 py-4 border-b"
-          style={{ borderColor: "hsl(30,12%,88%)" }}
-        >
-          <span
-            className="text-lg font-bold"
-            style={{ fontFamily: FONT_BRAND, color: ACCENT }}
-          >
-            شمل
-          </span>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            aria-label="إغلاق"
-          >
+      <aside className="fixed top-0 right-0 z-50 h-full flex flex-col transition-transform duration-300"
+        style={{ width: 280, backgroundColor: "hsl(0,0%,100%)", boxShadow: "-4px 0 24px rgba(0,0,0,0.12)", transform: open ? "translateX(0)" : "translateX(100%)" }}
+        dir="rtl">
+
+        <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "hsl(30,12%,88%)" }}>
+          <span className="text-lg font-bold" style={{ fontFamily: FONT_BRAND, color: ACCENT }}>شمل</span>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 transition-colors" aria-label="إغلاق">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path d="M1 1l16 16M17 1L1 17" stroke={ACCENT} strokeWidth="2.2" strokeLinecap="round" />
             </svg>
           </button>
         </div>
 
-        {/* Nav items — all use standard font */}
         <nav className="flex flex-col gap-1 p-4 flex-1">
-          <Link
-            href="/"
-            onClick={onClose}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors"
-            style={navLinkStyle}
-          >
-            🏠 الرئيسية
-          </Link>
-          <Link
-            href="/games"
-            onClick={onClose}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors"
-            style={navLinkStyle}
-          >
-            🎮 الألعاب
-          </Link>
-          <Link
-            href="/websites"
-            onClick={onClose}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors"
-            style={navLinkStyle}
-          >
-            🌐 المواقع
-          </Link>
-          <Link
-            href="/contact"
-            onClick={onClose}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors"
-            style={navLinkStyle}
-          >
-            💬 التواصل معنا
-          </Link>
+          {navLinks.map((l) => (
+            <Link key={l.href} href={l.href} onClick={onClose}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors"
+              style={navStyle}>
+              {l.label}
+            </Link>
+          ))}
 
           {isAdmin && (
-            <Link
-              href="/admin"
-              onClick={onClose}
+            <Link href="/admin" onClick={onClose}
               className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors"
-              style={{ ...navLinkStyle, color: ACCENT, fontWeight: 700 }}
-            >
+              style={{ ...navStyle, color: ACCENT, fontWeight: 700 }}>
               ⚙️ لوحة التحكم
             </Link>
           )}
@@ -150,41 +79,22 @@ export default function Sidebar({ open, onClose }: Props) {
 
           {user ? (
             <div className="flex flex-col gap-2">
-              <div
-                className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                style={{ backgroundColor: "hsl(30,10%,93%)" }}
-              >
-                {user.photoURL && (
-                  <img src={user.photoURL} alt="" className="w-8 h-8 rounded-full" />
-                )}
-                <span
-                  className="text-sm truncate"
-                  style={{ fontFamily: FONT_NAV, color: "hsl(20,10%,30%)" }}
-                >
+              <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ backgroundColor: "hsl(30,10%,93%)" }}>
+                {user.photoURL && <img src={user.photoURL} alt="" className="w-8 h-8 rounded-full" />}
+                <span className="text-sm truncate" style={{ fontFamily: FONT_NAV, color: "hsl(20,10%,30%)" }}>
                   {user.displayName || user.email}
                 </span>
               </div>
-              <button
-                onClick={handleLogout}
+              <button onClick={handleLogout}
                 className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 transition-colors"
-                style={{ fontFamily: FONT_NAV, color: ACCENT, fontWeight: 500, fontSize: "1rem" }}
-              >
+                style={{ fontFamily: FONT_NAV, color: ACCENT, fontWeight: 500, fontSize: "1rem" }}>
                 🚪 تسجيل الخروج
               </button>
             </div>
           ) : (
-            <button
-              onClick={handleGoogleLogin}
+            <button onClick={handleGoogleLogin}
               className="flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 transition-all hover:shadow-md"
-              style={{
-                borderColor: ACCENT,
-                color: ACCENT,
-                fontFamily: FONT_NAV,
-                fontWeight: 600,
-                fontSize: "0.95rem",
-                backgroundColor: "transparent",
-              }}
-            >
+              style={{ borderColor: ACCENT, color: ACCENT, fontFamily: FONT_NAV, fontWeight: 600, fontSize: "0.95rem", backgroundColor: "transparent" }}>
               <GoogleIcon />
               تسجيل الدخول عبر Google
             </button>

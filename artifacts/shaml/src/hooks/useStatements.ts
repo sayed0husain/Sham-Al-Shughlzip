@@ -4,6 +4,7 @@ import {
   onSnapshot,
   addDoc,
   deleteDoc,
+  updateDoc,
   doc,
   query,
   orderBy,
@@ -26,28 +27,24 @@ export function useStatements() {
 
   useEffect(() => {
     const q = query(collection(db, "statements"), orderBy("createdAt", "desc"));
-    const unsub = onSnapshot(
-      q,
-      (snap) => {
-        setStatements(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Statement)));
-        setLoading(false);
-      },
-      () => { setLoading(false); }
-    );
+    const unsub = onSnapshot(q, (snap) => {
+      setStatements(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Statement)));
+      setLoading(false);
+    }, () => setLoading(false));
     return unsub;
   }, []);
 
-  async function addStatement(data: Omit<Statement, "id" | "createdAt">): Promise<string> {
-    const ref = await addDoc(collection(db, "statements"), {
-      ...data,
-      createdAt: serverTimestamp(),
-    });
-    return ref.id;
+  async function addStatement(data: Omit<Statement, "id" | "createdAt">) {
+    return addDoc(collection(db, "statements"), { ...data, createdAt: serverTimestamp() });
   }
 
-  async function deleteStatement(id: string): Promise<void> {
-    await deleteDoc(doc(db, "statements", id));
+  async function updateStatement(id: string, data: Partial<Omit<Statement, "id" | "createdAt">>) {
+    return updateDoc(doc(db, "statements", id), data);
   }
 
-  return { statements, loading, addStatement, deleteStatement };
+  async function deleteStatement(id: string) {
+    return deleteDoc(doc(db, "statements", id));
+  }
+
+  return { statements, loading, addStatement, updateStatement, deleteStatement };
 }

@@ -4,6 +4,7 @@ import {
   onSnapshot,
   addDoc,
   deleteDoc,
+  updateDoc,
   doc,
   query,
   where,
@@ -35,28 +36,24 @@ export function useProjects(type?: "لعبة" | "موقع") {
       ? query(collection(db, "projects"), where("type", "==", type), orderBy("createdAt", "desc"))
       : query(collection(db, "projects"), orderBy("createdAt", "desc"));
 
-    const unsub = onSnapshot(
-      q,
-      (snap) => {
-        setProjects(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Project)));
-        setLoading(false);
-      },
-      () => { setLoading(false); }
-    );
+    const unsub = onSnapshot(q, (snap) => {
+      setProjects(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Project)));
+      setLoading(false);
+    }, () => setLoading(false));
     return unsub;
   }, [type]);
 
-  async function addProject(data: Omit<Project, "id" | "createdAt">): Promise<string> {
-    const ref = await addDoc(collection(db, "projects"), {
-      ...data,
-      createdAt: serverTimestamp(),
-    });
-    return ref.id;
+  async function addProject(data: Omit<Project, "id" | "createdAt">) {
+    return addDoc(collection(db, "projects"), { ...data, createdAt: serverTimestamp() });
   }
 
-  async function deleteProject(id: string): Promise<void> {
-    await deleteDoc(doc(db, "projects", id));
+  async function updateProject(id: string, data: Partial<Omit<Project, "id" | "createdAt">>) {
+    return updateDoc(doc(db, "projects", id), data);
   }
 
-  return { projects, loading, addProject, deleteProject };
+  async function deleteProject(id: string) {
+    return deleteDoc(doc(db, "projects", id));
+  }
+
+  return { projects, loading, addProject, updateProject, deleteProject };
 }

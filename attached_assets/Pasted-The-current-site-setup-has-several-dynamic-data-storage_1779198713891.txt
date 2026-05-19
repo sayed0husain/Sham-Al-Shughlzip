@@ -1,0 +1,30 @@
+The current site setup has several dynamic data, storage, and UI bugs. Completely replace any local storage/mock code with actual global Firebase integration so data is visible across all devices and accounts, and implement the following features strictly:
+
+1. ALTERNATIVE IMAGE UPLOAD FIX:
+   - Firebase Storage uploads are currently failing. Try an alternative approach: implementation of direct base64 string storage in the Realtime Database or utilize a secure client-side binary upload handler. Ensure that background images, logos, and statement pictures upload successfully.
+
+2. GLOBAL DATABASE SYNC:
+   - Fix the database fetch logic so that ALL users browsing the site from any device/browser can instantly see the uploaded Projects, Games, Statements, and Team Members. The data must be global, not cached locally.
+
+3. NEW FEATURE - BANNER ANNOUNCEMENT SYSTEM (إعلان):
+   - Admin Panel: Add a new section called "إدارة الإعلانات". It must contain fields to upload an Announcement Image and a Description Text ("نص توضيحي").
+   - Homepage Display: Render this announcement card STRICTLY at the very top of the Homepage (before anything else).
+   - Design Layout (Based on reference image): The card must have a grey background, the word "إعلان" at the top, a placeholder for the uploaded image (light grey box), and the "نص توضيحي" at the bottom.
+   - Close Button: Instead of the red dot, place a fully functional red close button (X icon) in the top-right corner so users can dismiss the announcement.
+
+4. SIDEBAR & TEAM MANAGEMENT MOVEMENT (الأيادي العاملة):
+   - Move the "الأيادي العاملة" section entirely out of the Homepage and create a dedicated page for it, accessible ONLY via a new link in the Sidebar Menu.
+   - Input Fields: Add fields for Name ("الاسم"), Instagram/Email ("الإنستقرام أو البريد الإلكتروني"), Contribution ("المساهمة"), Emoji Input ("إيموجي مرافق"), and Emoji Description ("شرح الإيموجي").
+   - Typography Rules: REMOVE the custom "Zaatar" font from team names entirely; render them in clean standard font. 
+   - Admin VIP Rule: If the added name is "سيد حسين" or "Sayed Husain", pin this card strictly at the top of the team list with a distinctive margin/space separating it from the rest of the members below.
+
+5. SMART STATEMENT PARSER WITH LIVE DROPDOWN (%):
+   - Inside the "إضافة تصريح جديد" form text area, when typing the `%` symbol, trigger a live, interactive autocomplete dropdown menu showing all currently uploaded project names. 
+   - When selected, it must render the project's name as a clickable hyperlink that opens the project's URL in a new tab.
+
+6. EDIT & UPDATE FUNCTIONALITY:
+   - For all items in the Admin Panel (Projects, Games, Statements, Announcements, and Team Members), add an "تعديل" (Edit) button next to the delete option. Clicking it must populate the form with existing data to allow updating the Firebase record directly without deleting it.
+
+7. WEBSITE CLICK ANALYTICS (الإحصائيات):
+   - In the Admin Control Panel, implement a private "الأحصائيات" section visible ONLY to the owner account (sayedhusain133@gmail.com).
+   - It must track and display the total number of clicks/visits directed to each individual project's URL.

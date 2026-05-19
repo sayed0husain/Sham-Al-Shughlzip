@@ -4,6 +4,7 @@ import {
   onSnapshot,
   addDoc,
   deleteDoc,
+  updateDoc,
   doc,
   query,
   orderBy,
@@ -17,6 +18,8 @@ export interface TeamMember {
   name: string;
   contact: string;
   contribution: string;
+  emoji: string;
+  emojiDescription: string;
   createdAt: Timestamp | null;
 }
 
@@ -26,28 +29,24 @@ export function useTeam() {
 
   useEffect(() => {
     const q = query(collection(db, "team"), orderBy("createdAt", "asc"));
-    const unsub = onSnapshot(
-      q,
-      (snap) => {
-        setMembers(snap.docs.map((d) => ({ id: d.id, ...d.data() } as TeamMember)));
-        setLoading(false);
-      },
-      () => { setLoading(false); }
-    );
+    const unsub = onSnapshot(q, (snap) => {
+      setMembers(snap.docs.map((d) => ({ id: d.id, ...d.data() } as TeamMember)));
+      setLoading(false);
+    }, () => setLoading(false));
     return unsub;
   }, []);
 
-  async function addMember(data: Omit<TeamMember, "id" | "createdAt">): Promise<string> {
-    const ref = await addDoc(collection(db, "team"), {
-      ...data,
-      createdAt: serverTimestamp(),
-    });
-    return ref.id;
+  async function addMember(data: Omit<TeamMember, "id" | "createdAt">) {
+    return addDoc(collection(db, "team"), { ...data, createdAt: serverTimestamp() });
   }
 
-  async function deleteMember(id: string): Promise<void> {
-    await deleteDoc(doc(db, "team", id));
+  async function updateMember(id: string, data: Partial<Omit<TeamMember, "id" | "createdAt">>) {
+    return updateDoc(doc(db, "team", id), data);
   }
 
-  return { members, loading, addMember, deleteMember };
+  async function deleteMember(id: string) {
+    return deleteDoc(doc(db, "team", id));
+  }
+
+  return { members, loading, addMember, updateMember, deleteMember };
 }

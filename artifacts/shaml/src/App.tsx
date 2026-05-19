@@ -26,20 +26,33 @@ function Navbar() {
         style={{ backgroundColor: "hsl(0,0%,100%)", borderColor: "hsl(30,12%,88%)" }}
       >
         <div className="max-w-6xl mx-auto px-5 py-3.5 flex items-center justify-between">
-          {/* FAR LEFT: Hamburger */}
-          <button
-            onClick={() => setSidebarOpen(true)}
-            aria-label="القائمة"
-            className="flex flex-col gap-1.5 p-2 rounded-lg transition-all hover:bg-gray-100"
-          >
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className="block h-0.5 w-6 rounded-full"
-                style={{ backgroundColor: ACCENT }}
-              />
-            ))}
-          </button>
+          {/* FAR LEFT: Hamburger + Home */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              aria-label="القائمة"
+              className="flex flex-col gap-1.5 p-2 rounded-lg transition-all hover:bg-gray-100"
+            >
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className="block h-0.5 w-6 rounded-full"
+                  style={{ backgroundColor: ACCENT }}
+                />
+              ))}
+            </button>
+            <Link
+              href="/"
+              aria-label="الرئيسية"
+              className="p-2 rounded-lg transition-all hover:bg-gray-100 flex items-center justify-center"
+              style={{ color: ACCENT }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
+                <path d="M9 21V12h6v9"/>
+              </svg>
+            </Link>
+          </div>
 
           {/* FAR RIGHT: admin badge + logo + nav */}
           <div className="flex items-center gap-5">
@@ -129,7 +142,7 @@ function StatCard({ label, value, delay = "" }: StatCardProps) {
       className={`rounded-3xl px-6 py-5 flex flex-col gap-2 animate-fade-in-up ${delay}`}
       style={{ backgroundColor: "hsl(30,10%,93%)", border: "1px solid hsl(30,12%,88%)" }}
     >
-      <span className="text-xs font-medium tracking-widest uppercase" style={{ color: "hsl(20,8%,55%)", fontFamily: FONT_H }}>
+      <span className="text-xs font-medium tracking-wide" style={{ color: "hsl(20,8%,55%)", fontFamily: FONT_B }}>
         {label}
       </span>
       <span className="text-2xl font-bold" style={{ color: "hsl(20,10%,15%)", fontFamily: FONT_NUM }}>

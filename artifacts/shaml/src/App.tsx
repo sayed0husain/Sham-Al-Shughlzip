@@ -4,7 +4,9 @@ import { useAuth } from "./hooks/useAuth";
 import { useVisitors } from "./hooks/useVisitors";
 import { useContactInfo } from "./hooks/useContactInfo";
 import { useProjects } from "./hooks/useProjects";
+import { useStatements } from "./hooks/useStatements";
 import Sidebar from "./components/Sidebar";
+import StatementBlock from "./components/StatementBlock";
 import GamesPage from "./pages/games";
 import WebsitesPage from "./pages/websites";
 import ContactPage from "./pages/contact";
@@ -15,6 +17,7 @@ const FONT_H = "'Zaatar','Reem Kufi',sans-serif";
 const FONT_B = "'Tajawal',sans-serif";
 const FONT_NUM = "'Inter','Arial',sans-serif";
 
+/* ─── Navbar ─────────────────────────────────────────────── */
 function Navbar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { isAdmin } = useAuth();
@@ -27,18 +30,14 @@ function Navbar() {
       >
         <div className="max-w-6xl mx-auto px-5 py-3.5 flex items-center justify-between">
           {/* FAR LEFT: Hamburger + Home */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <button
               onClick={() => setSidebarOpen(true)}
               aria-label="القائمة"
               className="flex flex-col gap-1.5 p-2 rounded-lg transition-all hover:bg-gray-100"
             >
               {[0, 1, 2].map((i) => (
-                <span
-                  key={i}
-                  className="block h-0.5 w-6 rounded-full"
-                  style={{ backgroundColor: ACCENT }}
-                />
+                <span key={i} className="block h-0.5 w-6 rounded-full" style={{ backgroundColor: ACCENT }} />
               ))}
             </button>
             <Link
@@ -81,40 +80,28 @@ function Navbar() {
                 </Link>
               )}
             </nav>
-
             <Link href="/">
-              <img
-                src="/logo.png"
-                alt="شمل"
-                className="h-10 w-10 rounded-lg object-cover cursor-pointer"
-              />
+              <img src="/logo.png" alt="شمل" className="h-10 w-10 rounded-lg object-cover cursor-pointer" />
             </Link>
           </div>
         </div>
       </header>
-
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
     </>
   );
 }
 
+/* ─── Hero ────────────────────────────────────────────────── */
 function HeroSection() {
   return (
     <section className="w-full flex flex-col items-center text-center px-6 py-20 md:py-32 animate-fade-in-up">
       <h1
         className="font-bold leading-none tracking-tight mb-8"
-        style={{
-          color: ACCENT,
-          fontFamily: FONT_H,
-          fontSize: "clamp(6rem, 18vw, 10rem)",
-        }}
+        style={{ color: ACCENT, fontFamily: FONT_H, fontSize: "clamp(6rem, 18vw, 10rem)" }}
       >
         شمل
       </h1>
-      <p
-        className="max-w-2xl text-lg md:text-xl leading-loose"
-        style={{ color: "hsl(20,8%,40%)", fontFamily: FONT_B }}
-      >
+      <p className="max-w-2xl text-lg md:text-xl leading-loose" style={{ color: "hsl(20,8%,40%)", fontFamily: FONT_B }}>
         أن نكون الخيار الأول لجمع شمل العائلات والأصدقاء، من خلال ابتكار
         تجارب ترفيهية تُحيي التواصل الإنساني وتصنع ذكريات لا تُنسى في كل بيت
       </p>
@@ -122,6 +109,7 @@ function HeroSection() {
   );
 }
 
+/* ─── Divider ─────────────────────────────────────────────── */
 function Divider() {
   return (
     <div className="max-w-6xl mx-auto px-6">
@@ -130,12 +118,12 @@ function Divider() {
   );
 }
 
+/* ─── Stat card ───────────────────────────────────────────── */
 interface StatCardProps {
   label: string;
   value: React.ReactNode;
   delay?: string;
 }
-
 function StatCard({ label, value, delay = "" }: StatCardProps) {
   return (
     <div
@@ -152,17 +140,17 @@ function StatCard({ label, value, delay = "" }: StatCardProps) {
   );
 }
 
+/* ─── Visitor counter ─────────────────────────────────────── */
 function VisitorCounter() {
   const count = useVisitors();
-  return <>{count.toLocaleString("en-US")}</>;
+  return <>{count}</>;
 }
 
-function ProjectsCounter() {
-  const { projects } = useProjects();
-  return <>{projects.length > 0 ? `+${projects.length}` : "+15"}</>;
-}
-
+/* ─── Bottom section ──────────────────────────────────────── */
 function BottomSection() {
+  const { projects: games } = useProjects("لعبة");
+  const { projects: sites } = useProjects("موقع");
+
   return (
     <section className="max-w-6xl mx-auto px-6 py-16 md:py-24">
       <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-start">
@@ -181,14 +169,10 @@ function BottomSection() {
           <div className="grid grid-cols-2 gap-4">
             <StatCard label="تاريخ التأسيس" value="2026" delay="delay-200" />
             <StatCard label="الأيادي العاملة في شمل" value="11" delay="delay-300" />
-            <StatCard
-              label="زوار موقع شمل"
-              value={<VisitorCounter />}
-              delay="delay-400"
-            />
+            <StatCard label="زوار موقع شمل" value={<VisitorCounter />} delay="delay-400" />
             <StatCard
               label="ألعاب مبتكرة"
-              value={<ProjectsCounter />}
+              value={games.length + sites.length > 0 ? games.length + sites.length : 0}
               delay="delay-500"
             />
           </div>
@@ -198,8 +182,78 @@ function BottomSection() {
   );
 }
 
+/* ─── Statements section ──────────────────────────────────── */
+function StatementsSection() {
+  const { statements, loading } = useStatements();
+  const { projects } = useProjects();
+
+  if (loading || statements.length === 0) return null;
+
+  return (
+    <section
+      className="w-full"
+      style={{ borderTop: "1px solid hsl(30,12%,88%)", backgroundColor: "hsl(30,15%,96%)" }}
+    >
+      <div className="max-w-4xl mx-auto px-6 py-16 flex flex-col gap-10">
+        <h2
+          className="text-3xl font-bold"
+          style={{ fontFamily: FONT_H, color: ACCENT, textAlign: "right" }}
+        >
+          التصريحات
+        </h2>
+
+        {statements.map((stmt) => (
+          <article
+            key={stmt.id}
+            className="flex flex-col gap-4 pb-10"
+            style={{ borderBottom: "1px solid hsl(30,12%,88%)" }}
+          >
+            {/* Title */}
+            <h3
+              style={{
+                fontFamily: FONT_H,
+                fontSize: "1.4rem",
+                color: "hsl(20,10%,12%)",
+                textAlign: "right",
+              }}
+            >
+              {stmt.title}
+            </h3>
+
+            {/* Images */}
+            {stmt.imageUrls && stmt.imageUrls.length > 0 && (
+              <div className="flex flex-wrap gap-3 justify-end">
+                {stmt.imageUrls.map((url, i) => (
+                  <img
+                    key={i}
+                    src={url}
+                    alt=""
+                    className="rounded-xl object-cover"
+                    style={{ height: 180, width: "auto", maxWidth: "100%" }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Content with smart parser */}
+            <StatementBlock content={stmt.content} projects={projects} />
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ─── Footer ──────────────────────────────────────────────── */
 function Footer() {
   const { contact } = useContactInfo();
+
+  function formatWhatsapp(raw: string) {
+    const digits = raw.replace(/\D/g, "");
+    if (digits.startsWith("973")) return digits;
+    if (digits.startsWith("00973")) return digits.slice(2);
+    return `973${digits}`;
+  }
 
   return (
     <footer
@@ -214,7 +268,7 @@ function Footer() {
         <div className="flex items-center gap-3">
           {contact.whatsapp && (
             <a
-              href={`https://wa.me/${contact.whatsapp.replace(/\D/g, "")}`}
+              href={`https://wa.me/${formatWhatsapp(contact.whatsapp)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="w-9 h-9 rounded-xl flex items-center justify-center transition-transform hover:scale-110"
@@ -226,7 +280,6 @@ function Footer() {
               </svg>
             </a>
           )}
-
           {contact.instagram && (
             <a
               href={contact.instagram.startsWith("http") ? contact.instagram : `https://instagram.com/${contact.instagram}`}
@@ -241,7 +294,6 @@ function Footer() {
               </svg>
             </a>
           )}
-
           {contact.email && (
             <a
               href={`mailto:${contact.email}`}
@@ -260,16 +312,19 @@ function Footer() {
   );
 }
 
+/* ─── Home page ───────────────────────────────────────────── */
 function HomePage() {
   return (
     <main className="flex-1 flex flex-col">
       <HeroSection />
       <Divider />
       <BottomSection />
+      <StatementsSection />
     </main>
   );
 }
 
+/* ─── App root ────────────────────────────────────────────── */
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "hsl(30,20%,97%)" }} dir="rtl">

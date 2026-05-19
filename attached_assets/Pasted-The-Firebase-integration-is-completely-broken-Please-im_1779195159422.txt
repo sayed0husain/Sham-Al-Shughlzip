@@ -1,0 +1,30 @@
+The Firebase integration is completely broken. Please implement the actual database, authentication, and storage logic now. Do NOT use fake hardcoded numbers. Follow these instructions strictly:
+
+1. Dynamic Stats: 
+   - The "زوار موقع شمل" counter must start strictly at 0 and use a real Firebase Realtime Database reference (e.g., /stats/visitors) to increment by 1 on every new visitor session.
+   - The "ألعاب مبتكرة" and "المواقع المرفوعة" counters must dynamically show the count of projects fetched from Firebase, starting at 0 if no projects are uploaded yet.
+
+2. Fixed Contact Links & Navigation: 
+   - Fix the WhatsApp link icon in the footer to use a Bahraini country code format (+973).
+   - Add the Home Page button (Home Icon / 🏠) in the top header menu right next to the 3-line hamburger icon.
+
+3. Typography Fix (Strict Rule): Remove the custom "Zaatar" font from the following places and use a clean default web font (like Inter or Arial) instead:
+   - Inside the homepage statistic cards: Keep ONLY the word "شمل" in Zaatar font. The rest of the labels (like "تاريخ التأسيس", "الأيادي العاملة في", "زوار موقع", "ألعاب مبتكرة") must be in standard font.
+   - Inside the Sidebar (Hamburger Menu): Remove the Zaatar font from all navigation links ("الألعاب", "المواقع", "التواصل معنا", "تسجيل الدخول عبر Google") and use a standard clean font.
+
+4. Admin Control Panel Dashboard - Project Form Update:
+   - In the "إضافة مشروع جديد" form, add a new required URL text input field: "رابط المشروع (الموقع أو اللعبة)".
+   - Make sure that when users browse the 'الألعاب' or 'المواقع' pages, clicking on a project card dynamically opens this "رابط المشروع" in a new browser tab.
+   - Ensure the image upload to Firebase Storage is working properly for backgrounds and transparent logos.
+   - Fully fix the Google Auth login button functionality.
+
+5. Admin Statements System (التصريحات):
+   - In the Control Panel (Admin Dashboard), add a new form called "إضافة تصريح جديد" with these exact fields:
+     * File upload: "رفع صور إلى التصريح"
+     * Text inputs: "عنوان التصريح" and "التصريح" (textarea for content).
+   - Display Layout: All published statements must appear at the very bottom of the Homepage (below everything else).
+   - Layout Alignment: All text within the statements section must be strictly aligned to the RIGHT (text-align: right) for proper Arabic reading, NOT centered.
+   - Smart Content Parser Logic (Strict Rendering Rules):
+     * If a word or line starts with `#`, render it as a large heading using the custom "Zaatar" font.
+     * If the word "شمل" appears anywhere in the text, automatically render it in the custom "Zaatar" font, but keep its font size matching the surrounding text.
+     * If the symbol `%` is typed, automatically replace it with an interactive hyperlink or suggestion list that points to the live projects/games URLs currently uploaded in the database.

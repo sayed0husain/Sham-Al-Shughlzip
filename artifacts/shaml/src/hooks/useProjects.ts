@@ -20,6 +20,7 @@ export interface Project {
   emojiDescription: string;
   bgImageUrl: string;
   centerImageUrl: string;
+  projectUrl: string;
   createdAt: Timestamp | null;
 }
 
@@ -28,16 +29,13 @@ export function useProjects(type?: "لعبة" | "موقع") {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let q;
-    if (type) {
-      q = query(
-        collection(db, "projects"),
-        where("type", "==", type),
-        orderBy("createdAt", "desc")
-      );
-    } else {
-      q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
-    }
+    const q = type
+      ? query(
+          collection(db, "projects"),
+          where("type", "==", type),
+          orderBy("createdAt", "desc")
+        )
+      : query(collection(db, "projects"), orderBy("createdAt", "desc"));
 
     const unsub = onSnapshot(
       q,
@@ -45,14 +43,12 @@ export function useProjects(type?: "لعبة" | "موقع") {
         setProjects(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Project)));
         setLoading(false);
       },
-      () => { setLoading(false); /* ignore offline errors */ }
+      () => { setLoading(false); }
     );
     return unsub;
   }, [type]);
 
-  async function addProject(
-    data: Omit<Project, "id" | "createdAt">
-  ): Promise<string> {
+  async function addProject(data: Omit<Project, "id" | "createdAt">): Promise<string> {
     const ref = await addDoc(collection(db, "projects"), {
       ...data,
       createdAt: serverTimestamp(),

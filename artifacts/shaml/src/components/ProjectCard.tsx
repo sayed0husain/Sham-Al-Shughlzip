@@ -10,13 +10,22 @@ interface Props {
 export default function ProjectCard({ project }: Props) {
   const [expanded, setExpanded] = useState(false);
 
+  function handleCardClick(e: React.MouseEvent) {
+    if ((e.target as HTMLElement).closest(".emoji-badge")) return;
+    if (project.projectUrl) {
+      window.open(project.projectUrl, "_blank", "noopener,noreferrer");
+    }
+  }
+
   return (
     <div
       className="relative rounded-2xl overflow-hidden"
+      onClick={handleCardClick}
       style={{
         aspectRatio: "3/4",
         minHeight: 320,
         boxShadow: "0 4px 24px rgba(0,0,0,0.13)",
+        cursor: project.projectUrl ? "pointer" : "default",
       }}
     >
       {/* Background image */}
@@ -24,13 +33,10 @@ export default function ProjectCard({ project }: Props) {
         <img
           src={project.bgImageUrl}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
       ) : (
-        <div
-          className="absolute inset-0"
-          style={{ background: "hsl(30,10%,88%)" }}
-        />
+        <div className="absolute inset-0" style={{ background: "hsl(30,10%,88%)" }} />
       )}
 
       {/* Overlay gradient */}
@@ -38,7 +44,7 @@ export default function ProjectCard({ project }: Props) {
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 55%, rgba(0,0,0,0.04) 100%)",
+            "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.04) 100%)",
         }}
       />
 
@@ -50,6 +56,21 @@ export default function ProjectCard({ project }: Props) {
             alt={project.name}
             className="w-2/3 max-h-40 object-contain drop-shadow-lg"
           />
+        </div>
+      )}
+
+      {/* "Open link" badge if URL exists */}
+      {project.projectUrl && (
+        <div
+          className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium"
+          style={{ backgroundColor: "rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.9)", backdropFilter: "blur(6px)", fontFamily: "'Tajawal',sans-serif" }}
+        >
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          فتح
         </div>
       )}
 
@@ -71,18 +92,17 @@ export default function ProjectCard({ project }: Props) {
 
       {/* Emoji badge */}
       <button
-        onClick={() => setExpanded((v) => !v)}
-        className="absolute top-3 left-3 flex items-center justify-center transition-all duration-500 select-none focus:outline-none"
+        onClick={(e) => { e.stopPropagation(); setExpanded((v) => !v); }}
+        className="emoji-badge absolute top-3 left-3 flex items-center justify-center transition-all duration-500 select-none focus:outline-none"
         style={{
           width: expanded ? 160 : 44,
           height: expanded ? 160 : 44,
           borderRadius: expanded ? "1.25rem" : "50%",
           backgroundColor: expanded ? "rgba(255,255,255,0.96)" : ACCENT,
-          boxShadow: expanded
-            ? "0 8px 32px rgba(0,0,0,0.18)"
-            : "0 2px 8px rgba(0,0,0,0.22)",
+          boxShadow: expanded ? "0 8px 32px rgba(0,0,0,0.18)" : "0 2px 8px rgba(0,0,0,0.22)",
           overflow: "hidden",
           padding: expanded ? "0.75rem" : "0",
+          zIndex: 10,
         }}
         aria-label={expanded ? "إغلاق" : "معلومات"}
       >

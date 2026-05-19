@@ -1,0 +1,37 @@
+Act as an expert full-stack developer. Update our portfolio website with the following system layout, strict dynamic logic, Firebase integration, and advanced UI features. Maintain the primary brownish-red brand color palette throughout.
+
+1. Typography & Font Style:
+- Use the uploaded custom font "Boharat-Zataar_Bold.otf" (font-family name: "Zaatar") ONLY for Arabic headings, titles, labels, and text navigation.
+- STIPULATION: Do NOT apply the "Zaatar" font to any numbers/digits. All digits and statistics numbers must use a clean, default web font (like Arial or Inter) for maximum legibility.
+
+2. Analytics & Dynamic Stats Counters (Homepage):
+- Visitors Counter: Setup a dynamic counter that tracks page views. It must start strictly at 0 (since the site is brand new) and increment by 1 on every new visitor session.
+- Games/Sites Counter: Tie this card's displayed total dynamically to the database, combining existing and newly added items from the control panel.
+
+3. Sidebar Navigation & Firebase Authentication:
+- In the 3-line hamburger menu, add options for "التواصل معنا" and a "تسجيل الدخول عبر Google" button.
+- Integrate Firebase Authentication (Google Auth). 
+- STIPULATION: If and only if the logged-in user email is strictly "sayedhusain133@gmail.com", display a hidden dynamic nav item called "لوحة التحكم" (Control Panel) in the header right next to the main logo.
+
+4. Admin Control Panel Dashboard:
+Create a dedicated route/view for the Control Panel (accessible only to the admin email) containing:
+- Contact Info Updates: Inputs to update WhatsApp number, Instagram link, and corporate Email.
+- "إضافة مشروع جديد" Form (Add New Project) with these exact fields:
+  * Select Menu (اختيار من متعدد): "نوع المشروع" with options: [لعبة , موقع].
+  * Text inputs: "اسم المشروع" and "شرح المشروع".
+  * Inline Text inputs (في نفس السطر): "الأيموجي" and "شرح الأيموجي".
+  * File Uploads: "صورة الخلفية" and "صورة الموقع المفرغة (PNG)".
+
+5. Dynamic 'الألعاب' and 'المواقع' Pages & Interactive Cards:
+Configure these two sub-pages to query data from Firebase based on the Select Menu type chosen in the control panel. Display items using custom interactive grid cards designed to match the brand color theme (brownish-red/neutral tones):
+- Card Background: Displays the uploaded "صورة الخلفية".
+- Centered Main Element: Displays the uploaded transparent "صورة الموقع المفرغة".
+- Text Elements: Place the "اسم المشروع" in a prominent large font below the center image, with the "شرح المشروع" rendered in smaller text beneath it.
+- Interactive Emoji Feature: Place the "الأيموجي" inside a distinct corner circle badge. When a visitor clicks on this emoji badge, trigger a smooth CSS scale transition animation that expands the circle to reveal the "شرح الأيموجي" text inside it elegantly.
+
+6. Footer Update (New):
+- At the very bottom of the website, update the footer layout. 
+- Next to the "جميع الحقوق محفوظة" (All rights reserved) text, add visual logos/icons for WhatsApp, Instagram, and Email.
+- These icons must pull the links dynamically from the database (the ones updated via the Control Panel) so users can click on them to get in touch instantly.
+
+Ensure full RTL layout support, responsive design, and smooth animations across all pages.

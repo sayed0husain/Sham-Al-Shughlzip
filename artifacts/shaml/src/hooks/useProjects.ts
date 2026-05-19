@@ -3,6 +3,8 @@ import {
   collection,
   onSnapshot,
   addDoc,
+  deleteDoc,
+  doc,
   query,
   where,
   orderBy,
@@ -30,11 +32,7 @@ export function useProjects(type?: "لعبة" | "موقع") {
 
   useEffect(() => {
     const q = type
-      ? query(
-          collection(db, "projects"),
-          where("type", "==", type),
-          orderBy("createdAt", "desc")
-        )
+      ? query(collection(db, "projects"), where("type", "==", type), orderBy("createdAt", "desc"))
       : query(collection(db, "projects"), orderBy("createdAt", "desc"));
 
     const unsub = onSnapshot(
@@ -56,5 +54,9 @@ export function useProjects(type?: "لعبة" | "موقع") {
     return ref.id;
   }
 
-  return { projects, loading, addProject };
+  async function deleteProject(id: string): Promise<void> {
+    await deleteDoc(doc(db, "projects", id));
+  }
+
+  return { projects, loading, addProject, deleteProject };
 }

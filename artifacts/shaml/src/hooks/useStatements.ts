@@ -3,6 +3,8 @@ import {
   collection,
   onSnapshot,
   addDoc,
+  deleteDoc,
+  doc,
   query,
   orderBy,
   serverTimestamp,
@@ -43,5 +45,9 @@ export function useStatements() {
     return ref.id;
   }
 
-  return { statements, loading, addStatement };
+  async function deleteStatement(id: string): Promise<void> {
+    await deleteDoc(doc(db, "statements", id));
+  }
+
+  return { statements, loading, addStatement, deleteStatement };
 }

@@ -28,5 +28,22 @@ localPort = 8081
 externalPort = 8081
 
 [[ports]]
+localPort = 20382
+externalPort = 3000
+
+[[ports]]
 localPort = 21606
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+VITE_SITES_API_KEY = "AIzaSyDxJtbyJV-gnEWOfcKt8-VrVyxMNtCk3bQ"
+VITE_SITES_AUTH_DOMAIN = "shaml-sites.firebaseapp.com"
+VITE_SITES_DATABASE_URL = "https://shaml-sites-default-rtdb.firebaseio.com"
+VITE_SITES_PROJECT_ID = "shaml-sites"
+VITE_SITES_STORAGE_BUCKET = "shaml-sites.firebasestorage.app"
+VITE_SITES_MESSAGING_SENDER_ID = "470356703337"
+VITE_SITES_APP_ID = "1:470356703337:web:32f754ff97a20717aa4af8"
+VITE_SITES_MEASUREMENT_ID = "G-3ESBTWTW4Z"
+VITE_SITES_ADMIN_EMAIL = "sayedhusain133@gmail.com"

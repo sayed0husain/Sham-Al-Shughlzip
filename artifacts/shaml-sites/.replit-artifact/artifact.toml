@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/shaml-sites/"
+title = "مواقع شمل - Shaml Sites"
+version = "1.0.0"
+id = "artifacts/shaml-sites"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/shaml-sites/" ]
+localPort = 20382
+
+[services.development]
+run = "pnpm --filter @workspace/shaml-sites run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/shaml-sites", "run", "build" ]
+publicDir = "artifacts/shaml-sites/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20382"
+BASE_PATH = "/shaml-sites/"

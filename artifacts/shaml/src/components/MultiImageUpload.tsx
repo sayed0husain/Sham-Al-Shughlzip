@@ -1,6 +1,4 @@
 import { useRef, useState } from "react";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "../lib/firebase";
 
 const ACCENT = "hsl(8, 61%, 41%)";
 const FONT_B = "'Tajawal','Arial',sans-serif";
@@ -27,23 +25,10 @@ async function compressToBase64(file: File): Promise<string> {
 }
 
 async function uploadOne(file: File, onProgress: (p: number) => void): Promise<string> {
-  try {
-    const filename = `uploads/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-    const storageRef = ref(storage, filename);
-    const task = uploadBytesResumable(storageRef, file, { contentType: file.type });
-    return await new Promise<string>((resolve, reject) => {
-      task.on("state_changed",
-        (snap) => onProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 90)),
-        reject,
-        async () => { try { resolve(await getDownloadURL(task.snapshot.ref)); } catch (e) { reject(e); } }
-      );
-    });
-  } catch {
-    onProgress(50);
-    const b64 = await compressToBase64(file);
-    onProgress(100);
-    return b64;
-  }
+  onProgress(20);
+  const b64 = await compressToBase64(file);
+  onProgress(100);
+  return b64;
 }
 
 interface Props {

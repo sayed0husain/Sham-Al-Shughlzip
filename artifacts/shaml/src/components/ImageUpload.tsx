@@ -1,6 +1,4 @@
 import { useRef, useState } from "react";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "../lib/firebase";
 
 const ACCENT = "hsl(8, 61%, 41%)";
 const FONT_B = "'Tajawal','Arial',sans-serif";
@@ -43,27 +41,9 @@ export default function ImageUpload({ label, value, onChange, accept = "image/*"
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setError(null); setUploading(true); setProgress(5);
+    setError(null); setUploading(true); setProgress(20);
 
-    /* ── Try Firebase Storage first ── */
-    try {
-      const filename = `uploads/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-      const storageRef = ref(storage, filename);
-      const task = uploadBytesResumable(storageRef, file, { contentType: file.type });
-      await new Promise<void>((resolve, reject) => {
-        task.on("state_changed",
-          (snap) => setProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 90)),
-          reject,
-          async () => { try { onChange(await getDownloadURL(task.snapshot.ref)); resolve(); } catch (e) { reject(e); } }
-        );
-      });
-      setProgress(100);
-      return;
-    } catch {
-      /* Storage failed — fall back to base64 stored inline */
-    }
-
-    /* ── Fallback: compress + base64 ── */
+    /* ── Base64 ── */
     try {
       setProgress(50);
       const b64 = await compressToBase64(file);
@@ -76,7 +56,6 @@ export default function ImageUpload({ label, value, onChange, accept = "image/*"
       setProgress(0);
       if (inputRef.current) inputRef.current.value = "";
     }
-    setUploading(false);
   }
 
   return (

@@ -1,5 +1,5 @@
 import { signInWithPopup, signInWithRedirect, signOut, getRedirectResult } from "firebase/auth";
-import { auth, googleProvider } from "../lib/firebase";
+import { auth, googleProvider, appleProvider } from "../lib/firebase";
 import { useAuth } from "../hooks/useAuth";
 import { Link } from "wouter";
 import { useEffect } from "react";
@@ -23,6 +23,18 @@ export default function Sidebar({ open, onClose }: Props) {
       const code = (err as { code?: string }).code;
       if (code === "auth/popup-blocked" || code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
         try { await signInWithRedirect(auth, googleProvider); } catch { /* silent */ }
+      }
+    }
+  }
+
+  async function handleAppleLogin() {
+    try {
+      await signInWithPopup(auth, appleProvider);
+      onClose();
+    } catch (err: unknown) {
+      const code = (err as { code?: string }).code;
+      if (code === "auth/popup-blocked" || code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
+        try { await signInWithRedirect(auth, appleProvider); } catch { /* silent */ }
       }
     }
   }
@@ -92,12 +104,20 @@ export default function Sidebar({ open, onClose }: Props) {
               </button>
             </div>
           ) : (
-            <button onClick={handleGoogleLogin}
-              className="flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 transition-all hover:shadow-md"
-              style={{ borderColor: ACCENT, color: ACCENT, fontFamily: FONT_NAV, fontWeight: 600, fontSize: "0.95rem", backgroundColor: "transparent" }}>
-              <GoogleIcon />
-              تسجيل الدخول عبر Google
-            </button>
+            <div className="flex flex-col gap-2">
+              <button onClick={handleGoogleLogin}
+                className="flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 transition-all hover:shadow-md"
+                style={{ borderColor: ACCENT, color: ACCENT, fontFamily: FONT_NAV, fontWeight: 600, fontSize: "0.95rem", backgroundColor: "transparent" }}>
+                <GoogleIcon />
+                تسجيل الدخول عبر Google
+              </button>
+              <button onClick={handleAppleLogin}
+                className="flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 transition-all hover:shadow-md"
+                style={{ borderColor: "hsl(20,8%,20%)", color: "hsl(20,8%,20%)", fontFamily: FONT_NAV, fontWeight: 600, fontSize: "0.95rem", backgroundColor: "transparent" }}>
+                <AppleIcon />
+                تسجيل الدخول عبر Apple
+              </button>
+            </div>
           )}
         </nav>
       </aside>
@@ -112,6 +132,14 @@ function GoogleIcon() {
       <path fill="#4285F4" d="M46.1 24.5c0-1.5-.1-3-.4-4.5H24v8.5h12.4c-.5 2.9-2.1 5.3-4.5 6.9l7 5.4c4.1-3.8 6.5-9.4 6.5-16.3z"/>
       <path fill="#FBBC05" d="M10.7 28.6A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.7-4.6L2.3 13.3A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.5 10.7l8.2-6.1z"/>
       <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7-5.4c-2.2 1.5-5 2.3-8.9 2.3-6.1 0-11.4-3.7-13.3-9.1l-8 6.1C6.7 42.6 14.7 48 24 48z"/>
+    </svg>
+  );
+}
+
+function AppleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" style={{ flexShrink: 0 }} fill="currentColor">
+      <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zm3.378-3.066c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701z"/>
     </svg>
   );
 }

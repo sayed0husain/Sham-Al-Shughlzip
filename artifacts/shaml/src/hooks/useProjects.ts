@@ -32,6 +32,10 @@ export function useProjects(type?: "لعبة" | "موقع") {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
     const q = type
       ? query(collection(db, "projects"), where("type", "==", type), orderBy("createdAt", "desc"))
       : query(collection(db, "projects"), orderBy("createdAt", "desc"));
@@ -44,14 +48,17 @@ export function useProjects(type?: "لعبة" | "موقع") {
   }, [type]);
 
   async function addProject(data: Omit<Project, "id" | "createdAt">) {
+    if (!db) throw new Error("Firebase not configured");
     return addDoc(collection(db, "projects"), { ...data, createdAt: serverTimestamp() });
   }
 
   async function updateProject(id: string, data: Partial<Omit<Project, "id" | "createdAt">>) {
+    if (!db) throw new Error("Firebase not configured");
     return updateDoc(doc(db, "projects", id), data);
   }
 
   async function deleteProject(id: string) {
+    if (!db) throw new Error("Firebase not configured");
     return deleteDoc(doc(db, "projects", id));
   }
 

@@ -14,6 +14,8 @@ export function useVisitors() {
   const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
+    if (!db) return;
+
     let unsub: (() => void) | undefined;
 
     try {
@@ -31,6 +33,7 @@ export function useVisitors() {
     }
 
     async function trackVisit() {
+      if (!db) return;
       if (sessionStorage.getItem(SESSION_KEY)) return;
       sessionStorage.setItem(SESSION_KEY, "1");
       try {

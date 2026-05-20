@@ -19,6 +19,10 @@ export function useContactInfo() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
     const unsub = onSnapshot(
       doc(db, "settings", "contact"),
       (snap) => {
@@ -33,6 +37,7 @@ export function useContactInfo() {
   }, []);
 
   async function updateContact(data: ContactInfo) {
+    if (!db) throw new Error("Firebase not configured");
     await setDoc(doc(db, "settings", "contact"), data);
   }
 

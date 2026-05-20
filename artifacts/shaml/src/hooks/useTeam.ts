@@ -28,6 +28,10 @@ export function useTeam() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
     const q = query(collection(db, "team"), orderBy("createdAt", "asc"));
     const unsub = onSnapshot(q, (snap) => {
       setMembers(snap.docs.map((d) => ({ id: d.id, ...d.data() } as TeamMember)));
@@ -37,14 +41,17 @@ export function useTeam() {
   }, []);
 
   async function addMember(data: Omit<TeamMember, "id" | "createdAt">) {
+    if (!db) throw new Error("Firebase not configured");
     return addDoc(collection(db, "team"), { ...data, createdAt: serverTimestamp() });
   }
 
   async function updateMember(id: string, data: Partial<Omit<TeamMember, "id" | "createdAt">>) {
+    if (!db) throw new Error("Firebase not configured");
     return updateDoc(doc(db, "team", id), data);
   }
 
   async function deleteMember(id: string) {
+    if (!db) throw new Error("Firebase not configured");
     return deleteDoc(doc(db, "team", id));
   }
 

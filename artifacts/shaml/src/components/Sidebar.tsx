@@ -13,9 +13,13 @@ interface Props { open: boolean; onClose: () => void; }
 export default function Sidebar({ open, onClose }: Props) {
   const { user, isAdmin } = useAuth();
 
-  useEffect(() => { getRedirectResult(auth).catch(() => {}); }, []);
+  useEffect(() => {
+    if (!auth) return;
+    getRedirectResult(auth).catch(() => {});
+  }, []);
 
   async function handleGoogleLogin() {
+    if (!auth) return;
     try {
       await signInWithPopup(auth, googleProvider);
       onClose();
@@ -28,6 +32,7 @@ export default function Sidebar({ open, onClose }: Props) {
   }
 
   async function handleAppleLogin() {
+    if (!auth) return;
     try {
       await signInWithPopup(auth, appleProvider);
       onClose();
@@ -39,7 +44,11 @@ export default function Sidebar({ open, onClose }: Props) {
     }
   }
 
-  async function handleLogout() { await signOut(auth); onClose(); }
+  async function handleLogout() {
+    if (!auth) return;
+    await signOut(auth);
+    onClose();
+  }
 
   const navStyle = { fontFamily: FONT_NAV, color: "hsl(20,10%,20%)", fontSize: "1rem", fontWeight: 500 };
 
@@ -103,7 +112,7 @@ export default function Sidebar({ open, onClose }: Props) {
                 🚪 تسجيل الخروج
               </button>
             </div>
-          ) : (
+          ) : auth ? (
             <div className="flex flex-col gap-2">
               <button onClick={handleGoogleLogin}
                 className="flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 transition-all hover:shadow-md"
@@ -118,7 +127,7 @@ export default function Sidebar({ open, onClose }: Props) {
                 تسجيل الدخول عبر Apple
               </button>
             </div>
-          )}
+          ) : null}
         </nav>
       </aside>
     </>

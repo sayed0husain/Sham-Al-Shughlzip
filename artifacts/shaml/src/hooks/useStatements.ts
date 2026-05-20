@@ -26,6 +26,10 @@ export function useStatements() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
     const q = query(collection(db, "statements"), orderBy("createdAt", "desc"));
     const unsub = onSnapshot(q, (snap) => {
       setStatements(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Statement)));
@@ -35,14 +39,17 @@ export function useStatements() {
   }, []);
 
   async function addStatement(data: Omit<Statement, "id" | "createdAt">) {
+    if (!db) throw new Error("Firebase not configured");
     return addDoc(collection(db, "statements"), { ...data, createdAt: serverTimestamp() });
   }
 
   async function updateStatement(id: string, data: Partial<Omit<Statement, "id" | "createdAt">>) {
+    if (!db) throw new Error("Firebase not configured");
     return updateDoc(doc(db, "statements", id), data);
   }
 
   async function deleteStatement(id: string) {
+    if (!db) throw new Error("Firebase not configured");
     return deleteDoc(doc(db, "statements", id));
   }
 

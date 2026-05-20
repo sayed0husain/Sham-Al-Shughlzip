@@ -26,6 +26,10 @@ export function useAnnouncements() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
     const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"));
     const unsub = onSnapshot(q, (snap) => {
       setAnnouncements(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Announcement)));
@@ -35,14 +39,17 @@ export function useAnnouncements() {
   }, []);
 
   async function addAnnouncement(data: Omit<Announcement, "id" | "createdAt">) {
+    if (!db) throw new Error("Firebase not configured");
     return addDoc(collection(db, "announcements"), { ...data, createdAt: serverTimestamp() });
   }
 
   async function updateAnnouncement(id: string, data: Partial<Omit<Announcement, "id" | "createdAt">>) {
+    if (!db) throw new Error("Firebase not configured");
     return updateDoc(doc(db, "announcements", id), data);
   }
 
   async function deleteAnnouncement(id: string) {
+    if (!db) throw new Error("Firebase not configured");
     return deleteDoc(doc(db, "announcements", id));
   }
 

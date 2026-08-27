@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "0YRlpxW7kp0kiwypvD7h8"
+uri = "file://artifacts/shaml/public/fonts/Boharat-Zataar_Regular.otf"
+type = "unspecified"
+title = "خط زعتر - Regular"
+description = "نسخة الخط العربي Boharat Zataar العادية."
+
+[[outputs]]
+id = "9O7N-bdvgLWY_FfOOss7q"
+uri = "file://artifacts/shaml/public/fonts/Boharat-Zataar_Bold.otf"
+type = "unspecified"
+title = "خط زعتر - Bold"
+description = "نسخة الخط العربي Boharat Zataar العريضة."
